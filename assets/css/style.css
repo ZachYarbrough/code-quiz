@@ -1,0 +1,43 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: rgb(83, 0, 161);
+    --secondary: rgb(164, 0, 185);
+    --tertiary: rgb(183, 0, 207);
+}
+
+a {
+    text-decoration: none;
+    color: var(--secondary);
+}
+
+button {
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    color: rgb(255, 255, 255);
+    background-color: var(--primary);
+}
+
+button:hover {
+    background-color: var(--secondary);
+}
+
+button:active {
+    background-color: var(--tertiary);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.start-quiz {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
