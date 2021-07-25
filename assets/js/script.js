@@ -6,6 +6,7 @@ var count = 90;
 timeEl.textContent = 'Time Remaing: ' + count;
 
 var questionNum = 0;
+var currentScore = 0;
 
 var highScores = JSON.parse(localStorage.getItem("scores")); 
 if(highScores === null) highScores = [];
@@ -13,7 +14,7 @@ startEl.addEventListener('click', function() {
     var startTime = setInterval(function() {
         count--;
         timeEl.textContent = 'Time Remaing: ' + count;
-        if(count <= 0 || questionNum >= 5) {
+        if(count <= 0 || questionNum > 5) {
             clearInterval(startTime);
             removeScreens();
             count = 0;
@@ -52,11 +53,14 @@ var wrongAnswer = function () {
     questionStatusEl.innerHTML = 'Wrong!';
     count -= 5;
     timeEl.textContent = 'Time Remaing: ' + count;
+    questionNum++;
+    newQuestion();
 }
 
 var correctAnswer = function () {
     questionStatusEl.innerHTML = 'Correct!';
     questionNum++;
+    currentScore++;
     newQuestion();
 }
 
@@ -110,7 +114,61 @@ var newQuestion = function() {
         answer2.addEventListener('click', wrongAnswer);
         answer3.addEventListener('click', wrongAnswer);
         answer4.addEventListener('click', wrongAnswer);
-    }
+    } else if (questionNum === 3) {
+
+        answer1.removeEventListener('click', correctAnswer);
+        answer2.removeEventListener('click', wrongAnswer);
+        answer3.removeEventListener('click', wrongAnswer);
+        answer4.removeEventListener('click', wrongAnswer);
+
+        questionEl.innerHTML = 'What do you use to enclose a function?';
+
+        answer1.innerHTML = '[ ]';
+        answer2.innerHTML = '{ }';
+        answer3.innerHTML = '( )';
+        answer4.innerHTML = '| |';
+
+        answer1.addEventListener('click', wrongAnswer);
+        answer2.addEventListener('click', correctAnswer);
+        answer3.addEventListener('click', wrongAnswer);
+        answer4.addEventListener('click', wrongAnswer);
+    } else if (questionNum === 4) {
+
+        answer1.removeEventListener('click', wrongAnswer);
+        answer2.removeEventListener('click', correctAnswer);
+        answer3.removeEventListener('click', wrongAnswer);
+        answer4.removeEventListener('click', wrongAnswer);
+
+        questionEl.innerHTML = 'How do you enclose a string?';
+
+        answer1.innerHTML = '[ String ]';
+        answer2.innerHTML = '/ String /';
+        answer3.innerHTML = '( String )';
+        answer4.innerHTML = '" String "';
+
+        answer1.addEventListener('click', wrongAnswer);
+        answer2.addEventListener('click', wrongAnswer);
+        answer3.addEventListener('click', wrongAnswer);
+        answer4.addEventListener('click', correctAnswer);
+    } else if (questionNum === 5) {
+
+        answer1.removeEventListener('click', wrongAnswer);
+        answer2.removeEventListener('click', wrongAnswer);
+        answer3.removeEventListener('click', wrongAnswer);
+        answer4.removeEventListener('click', correctAnswer);
+
+        questionEl.innerHTML = 'What element does an array start at?';
+
+        answer1.innerHTML = '1';
+        answer2.innerHTML = '0';
+        answer3.innerHTML = '-1';
+        answer4.innerHTML = 'There is no such thing as an element in an Array';
+
+        answer1.addEventListener('click', wrongAnswer);
+        answer2.addEventListener('click', correctAnswer);
+        answer3.addEventListener('click', wrongAnswer);
+        answer4.addEventListener('click', wrongAnswer);
+    } 
 }
 
 var finishScreen = document.createElement('div');
@@ -122,6 +180,7 @@ var createFinish = function() {
     var inputContainer = document.createElement('div');
     inputContainer.classList.add('input-container');
     var inputText = document.createElement('p');
+    inputText.classList.add('input-text');
     var initialInput = document.createElement('input');
     initialInput.setAttribute('type', 'text');
     initialInput.setAttribute('name', 'initial');
@@ -137,16 +196,15 @@ var createFinish = function() {
     inputContainer.append(inputText);
     inputContainer.append(initialInput);
     inputContainer.append(submit);
-
     finishTitleEl.innerHTML = 'All Done!';
-    finishText.innerHTML = 'Your Score is: ' + (questionNum * 5);
+    finishText.innerHTML = 'Your Score is: ' + (currentScore * 5);
 
     inputText.innerHTML = 'Enter your Initials: ';
 
     submit.addEventListener('click', function() {
         highScores.push({
             'initial': initialInput.value,
-            'highscore': questionNum * 5
+            'highscore': (currentScore * 5)
         });
         localStorage.setItem('scores', JSON.stringify(highScores));
 
@@ -160,16 +218,28 @@ var highScoreContainer = document.createElement('div');
 var createHighScore = function () {
     removeScreens();
     highScoreContainer.classList.add('container');
-    var highScoreEl = document.createElement('ul');
+    var highScoreTextEl = document.createElement('h1');
+    var highScoreEl = document.createElement('ol');
+    highScoreEl.classList.add('high-score-list');
     var backToStart = document.createElement('button');
+
+    highScoreTextEl.innerHTML = 'High Scores';
 
         
     document.querySelector('main').append(highScoreContainer);
+    highScoreContainer.append(highScoreTextEl);
     highScoreContainer.append(highScoreEl);
     for(var i = 0; i < highScores.length; i++) {
         var newLi = document.createElement('li');
-        newLi.innerHTML = highScores[i].initial + ' ' + highScores[i].highscore;
+        var initialEl = document.createElement('p');
+        var scoreEl = document.createElement('p');
+
+        initialEl.innerHTML = highScores[i].initial;
+        scoreEl.innerHTML = highScores[i].highscore;
+        newLi.classList.add('high-score-el');
         highScoreEl.append(newLi);
+        newLi.append(initialEl);
+        newLi.append(scoreEl);
     }
     highScoreContainer.append(backToStart);
     backToStart.innerHTML = 'Back to Start';

@@ -1,16 +1,34 @@
 * {
     padding: 0;
     margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
     box-sizing: border-box;
 }
 
 :root {
     --primary: rgb(83, 0, 161);
+    --primary-transparent: rgb(83, 0, 161, 0.3);
     --secondary: rgb(164, 0, 185);
     --tertiary: rgb(183, 0, 207);
 }
 
+h1 {
+    font-weight: bold;
+    font-size: 4rem;
+}
+
+p {
+    margin: 0 10%;
+    font-size: 1.5rem;
+}
+
+header>p {
+    margin: 1% 10%;
+}
+
 a {
+    margin: 1% 10%;
+    font-size: 1.5rem;
     text-decoration: none;
     color: var(--secondary);
 }
@@ -18,8 +36,9 @@ a {
 button {
     border: none;
     border-radius: 10px;
+    font-size: 1.5rem;
     padding: 10px 20px;
-    margin: 0 auto 5px auto;
+    margin: 1% auto 1% auto;
     color: rgb(255, 255, 255);
     background-color: var(--primary);
 }
@@ -78,5 +97,24 @@ header {
 .question-status {
     border-top: solid 3px gray;
     margin: 0 auto;
+    padding: 5px 40%;
     color: gray;
+}
+
+.input-text {
+    margin: 0 10px;
+}
+
+.high-score-list {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding: 0 20%;
+}
+
+.high-score-el {
+    background-color: var(--primary-transparent);
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-around;
 }
