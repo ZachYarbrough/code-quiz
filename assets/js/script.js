@@ -7,16 +7,20 @@ timeEl.textContent = 'Time Remaing: ' + count;
 
 var questionNum = 0;
 
+var highScores = JSON.parse(localStorage.getItem("scores")); 
+if(highScores === null) highScores = [];
 startEl.addEventListener('click', function() {
     var startTime = setInterval(function() {
         count--;
         timeEl.textContent = 'Time Remaing: ' + count;
-        if(count <= 0) {
+        if(count <= 0 || questionNum >= 5) {
             clearInterval(startTime);
-            questionContainer.remove();
+            removeScreens();
+            count = 0;
+            createFinish();
         }
     }, 1000);
-    startQuiz.remove();
+    removeScreens();
     createQuestion();
 });
 
@@ -108,3 +112,80 @@ var newQuestion = function() {
         answer4.addEventListener('click', wrongAnswer);
     }
 }
+
+var finishScreen = document.createElement('div');
+
+var createFinish = function() {
+    finishScreen.classList.add('container');
+    var finishTitleEl = document.createElement('h1');
+    var finishText = document.createElement('p');
+    var inputContainer = document.createElement('div');
+    inputContainer.classList.add('input-container');
+    var inputText = document.createElement('p');
+    var initialInput = document.createElement('input');
+    initialInput.setAttribute('type', 'text');
+    initialInput.setAttribute('name', 'initial');
+    var submit = document.createElement('input');
+    submit.setAttribute('type', 'submit');
+    submit.setAttribute('value', 'submit');
+    submit.classList.add('btn');
+    
+    document.querySelector('main').append(finishScreen);
+    finishScreen.append(finishTitleEl);
+    finishScreen.append(finishText);
+    finishScreen.append(inputContainer);
+    inputContainer.append(inputText);
+    inputContainer.append(initialInput);
+    inputContainer.append(submit);
+
+    finishTitleEl.innerHTML = 'All Done!';
+    finishText.innerHTML = 'Your Score is: ' + (questionNum * 5);
+
+    inputText.innerHTML = 'Enter your Initials: ';
+
+    submit.addEventListener('click', function() {
+        highScores.push({
+            'initial': initialInput.value,
+            'highscore': questionNum * 5
+        });
+        localStorage.setItem('scores', JSON.stringify(highScores));
+
+        removeScreens();
+        createHighScore();
+    });
+}
+
+var highScoreContainer = document.createElement('div');
+
+var createHighScore = function () {
+    removeScreens();
+    highScoreContainer.classList.add('container');
+    var highScoreEl = document.createElement('ul');
+    var backToStart = document.createElement('button');
+
+        
+    document.querySelector('main').append(highScoreContainer);
+    highScoreContainer.append(highScoreEl);
+    for(var i = 0; i < highScores.length; i++) {
+        var newLi = document.createElement('li');
+        newLi.innerHTML = highScores[i].initial + ' ' + highScores[i].highscore;
+        highScoreEl.append(newLi);
+    }
+    highScoreContainer.append(backToStart);
+    backToStart.innerHTML = 'Back to Start';
+
+    backToStart.addEventListener('click', function() {
+        location.reload();
+    });
+}
+
+var removeScreens = function() {
+    if(startQuiz) startQuiz.remove();
+    if(finishScreen) finishScreen.remove();
+    if(questionContainer) questionContainer.remove();
+    if(highScoreContainer) highScoreContainer.remove();
+}
+
+var viewScores = document.querySelector('.high-scores');
+
+viewScores.addEventListener('click', createHighScore);
